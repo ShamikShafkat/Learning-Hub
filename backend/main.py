@@ -58,6 +58,7 @@ async def exception_handler(request, exc):
     })
     
     
+    
 app.include_router(UserRouter,prefix="/users",tags=["User"])
 app.include_router(AuthRouter,prefix="/auth",tags=["Auth"])
 app.include_router(CourseRouter,prefix="/courses",tags=["Course"])
