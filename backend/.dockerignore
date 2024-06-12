@@ -1,0 +1,30 @@
+# Ignore Python cache files
+__pycache__
+*.pyc
+
+# Ignore environment files
+.env
+
+# Ignore log files
+*.log
+
+# Ignore any build artifacts
+build/
+dist/
+*.o
+*.a
+*.out
+
+# Ignore version control directories
+.git
+.gitignore
+
+# Ignore node_modules
+node_modules
+
+# Ignore Dockerfile if not needed in the context
+Dockerfile
+docker-compose.yml
+
+# Ignore other unnecessary files
+README.md
