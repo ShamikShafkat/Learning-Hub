@@ -1,0 +1,191 @@
+/* Custom input field with semi-transparent dark background and outline */
+.custom-input {
+      background-color: rgba(0, 0, 0, 0.5);
+      /* semi-transparent dark background */
+      color: white;
+      /* white text color for visibility */
+      border: 1px solid #ffffff61;
+      /* white border */
+      border-radius: 4px;
+      padding-top: 15px;
+      padding-bottom: 15px;
+
+}
+
+/* Placeholder color */
+.custom-input .ant-input::placeholder {
+      color: rgba(255, 255, 255, 0.487);
+      /* semi-transparent white */
+}
+
+/* Icon color */
+.custom-input .ant-input-prefix {
+      color: rgba(255, 255, 255, 0.487);
+      /* white icon color */
+}
+
+.custom-input:focus-within {
+      background-color: black;
+}
+
+.custom-input:hover {
+      background-color: black;
+}
+
+
+
+@keyframes animate {
+      0% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 1;
+            border-radius: 0;
+      }
+
+      100% {
+            transform: translateY(-1000px) rotate(720deg);
+            opacity: 0;
+            border-radius: 50%;
+      }
+}
+
+@keyframes animate {
+      0% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 1;
+            border-radius: 0;
+      }
+
+      100% {
+            transform: translateY(-1000px) rotate(720deg);
+            opacity: 0;
+            border-radius: 50%;
+      }
+}
+
+.background {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      top: 0;
+      left: 0;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+}
+
+.background li {
+      position: absolute;
+      display: block;
+      list-style: none;
+      width: 20px;
+      height: 20px;
+      background: rgba(15, 21, 110, 0.532);
+      animation: animate 41s linear infinite;
+}
+
+
+
+
+.background li:nth-child(0) {
+      left: 25%;
+      width: 271px;
+      height: 271px;
+      bottom: -271px;
+      animation-delay: 1s;
+}
+
+.background li:nth-child(1) {
+      left: 67%;
+      width: 248px;
+      height: 248px;
+      bottom: -248px;
+      animation-delay: 1s;
+}
+
+.background li:nth-child(2) {
+      left: 21%;
+      width: 288px;
+      height: 288px;
+      bottom: -288px;
+      animation-delay: 5s;
+}
+
+.background li:nth-child(3) {
+      left: 13%;
+      width: 192px;
+      height: 192px;
+      bottom: -192px;
+      animation-delay: 13s;
+}
+
+.background li:nth-child(4) {
+      left: 34%;
+      width: 260px;
+      height: 260px;
+      bottom: -260px;
+      animation-delay: 15s;
+}
+
+.background li:nth-child(5) {
+      left: 68%;
+      width: 282px;
+      height: 282px;
+      bottom: -282px;
+      animation-delay: 7s;
+}
+
+.background li:nth-child(6) {
+      left: 22%;
+      width: 304px;
+      height: 304px;
+      bottom: -304px;
+      animation-delay: 11s;
+}
+
+.background li:nth-child(7) {
+      left: 31%;
+      width: 206px;
+      height: 206px;
+      bottom: -206px;
+      animation-delay: 26s;
+}
+
+.background li:nth-child(8) {
+      left: 42%;
+      width: 256px;
+      height: 256px;
+      bottom: -256px;
+      animation-delay: 6s;
+}
+
+.background li:nth-child(9) {
+      left: 55%;
+      width: 345px;
+      height: 345px;
+      bottom: -345px;
+      animation-delay: 45s;
+}
+
+.background li:nth-child(10) {
+      left: 21%;
+      width: 203px;
+      height: 203px;
+      bottom: -203px;
+      animation-delay: 42s;
+}
+
+.background li:nth-child(11) {
+      left: 18%;
+      width: 194px;
+      height: 194px;
+      bottom: -194px;
+      animation-delay: 39s;
+}
+
+.background li:nth-child(12) {
+      left: 0%;
+      width: 250px;
+      height: 250px;
+      bottom: -250px;
+      animation-delay: 24s;
+}
