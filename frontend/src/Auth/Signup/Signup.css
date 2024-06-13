@@ -1,27 +1,35 @@
 /* Custom input field with semi-transparent dark background and outline */
 .custom-input {
-      background-color: rgba(0, 0, 0, 0.5);
-      /* semi-transparent dark background */
-      color: white;
-      /* white text color for visibility */
+      background-color: #00000080;
       border: 1px solid #ffffff61;
-      /* white border */
       border-radius: 4px;
       padding-top: 15px;
       padding-bottom: 15px;
 
 }
 
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: #ffffff;
+      transition: background-color 5000s ease-in-out 0s;
+      box-shadow: inset 0 0 20px 20px #23232329;
+
+}
+
+
+
 /* Placeholder color */
 .custom-input .ant-input::placeholder {
       color: rgba(255, 255, 255, 0.487);
-      /* semi-transparent white */
 }
 
 /* Icon color */
 .custom-input .ant-input-prefix {
       color: rgba(255, 255, 255, 0.487);
-      /* white icon color */
 }
 
 .custom-input:focus-within {
