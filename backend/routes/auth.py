@@ -53,12 +53,20 @@ oauth.register(
 )
 
 
+@router.get("/", status_code= status.HTTP_200_OK)
+async def hello(request: Request):
+    return {"message": "Hello World"}
+
 @router.post("/register",status_code=status.HTTP_201_CREATED)
 async def register(user : User_Create_Validation):
     #first check whether the email already exists or not
     prev_user = await users_collection.find_one({"email" : user.email})
+    
     if prev_user is not None:
-        raise HTTPException(status_code=400,detail="Email already exists.")
+        if prev_user["is_email_verified"] == True:
+            raise HTTPException(status_code=400,detail="Email already exists.")
+        else:
+            users_collection.delete_one({"email" : user.email})
     
     #hash the password
     hashed_password = get_hashed_token(user.password)
