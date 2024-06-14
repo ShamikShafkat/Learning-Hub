@@ -9,7 +9,6 @@ import Password from "./Profile/Password";
 import { useEffect } from "react";
 import Loading from "./components/loading";
 import axios from "axios";
-import UserProvider from "./Provider/UserProvider";
 import { useState } from "react";
 function App() {
   const [loading, setLoading] = useState(false);
@@ -40,17 +39,17 @@ function App() {
   }, []);
 
   return (
-      <BrowserRouter>
-        <Loading show={loading} />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+    <BrowserRouter>
+      <Loading show={loading} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
 
-          <Route path="/password" element={<Password />} />
-          <Route path="/profile" element={<Profile />} />
-        </Routes>
-      </BrowserRouter>
+        <Route path="/password" element={<Password />} />
+        <Route path="/profile" element={<Profile />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

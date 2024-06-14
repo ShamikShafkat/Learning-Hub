@@ -66,14 +66,14 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const { login, logout, user } = useContext(UserContext);
+  const { login, logout, user, setUser, fetchUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
       navigate("/profile");
     }
-  }, []);
+  }, [user]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -94,11 +94,6 @@ function Login() {
           console.log(res.headers);
           toast.success("Logged in successfully", {});
           localStorage.setItem("accessToken", res.headers["accesstoken"]);
-          login({
-            email: email,
-            accessToken: res.headers["accesstoken"],
-          });
-
           await axios
             .get("http://localhost:8000/users/profile/", {
               headers: {
@@ -107,14 +102,13 @@ function Login() {
             })
             .then((res1) => {
               const data = res1.data.data[0];
-              console.log(
-                Object.assign({ accessToken: res.headers["accesstoken"] }, data)
-              );
-              login(
-                Object.assign({ accessToken: res.headers["accesstoken"] }, data)
-              );
+              const d = Object.assign(data, {
+                accessToken: res.headers["accesstoken"],
+              });
+              setUser(d);
+              console.log(d);
             });
-          navigate("/");
+          navigate("/profile");
         });
     } catch (error) {
       const errorData = error.response.status;

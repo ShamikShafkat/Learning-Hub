@@ -1,10 +1,15 @@
 import "../App.css";
 import NavBar from "../components/navbar";
+import { useContext } from "react";
+import UserContext from "../context/UserContext";
+import { useEffect } from "react";
 
 import { Input } from "antd";
 const onSearch = (value) => console.log(value);
 const { Search } = Input;
 function Home() {
+  const { logout, user } = useContext(UserContext);
+
   return (
     <div className="App bg-[#0f1521] w-screen min-h-screen">
       <header className="flex flex-col w-[100vw] justify-center items-center h-[20vh] z-50 fixed">

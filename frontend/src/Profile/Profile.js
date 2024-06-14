@@ -18,12 +18,22 @@ const onSearch = (value) => console.log(value);
 
 const { Search } = Input;
 function Profile() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const { logout, user, fetchUser } = useContext(UserContext);
+  const [name, setName] = useState(user && user.name ? user.name : "");
+  const [email, setEmail] = useState(user && user.email ? user.email : "");
+  const [phone, setPhone] = useState(
+    user && user.phone_number ? user.phone_number : ""
+  );
+  const [img, setImg] = useState(user && user.image ? user.image : "");
+
   const navigate = useNavigate();
-  const { logout, user } = useContext(UserContext);
   useEffect(() => {
-    if (!user) {
+    if (user) {
+      setEmail(user.email ? user.email : "");
+      setName(user.name ? user.name : "");
+      setPhone(user.phone_number ? user.phone_number : "");
+      setImg(user.image ? user.image : "");
+    } else {
       navigate("/login");
     }
   }, [user]);
@@ -160,19 +170,34 @@ function Profile() {
           <div className="w-[50%] flex flex-col justify-start items-start mt-10">
             <div className="font-sans text-[#ffffffec] text-sm">Full Name</div>
             <Input
-              value="Galib Mahmud Jim"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               size="large"
               placeholder=""
               className="custom-input mt-3"
             />
           </div>
+
+          <div className="w-[50%] flex flex-col justify-start items-start mt-5">
+            <div className="font-sans text-[#ffffffec] text-sm">
+              Phone Number
+            </div>
+            <Input
+              value={phone}
+              size="large"
+              placeholder=""
+              className="custom-input mt-3 "
+            />
+          </div>
           <div className="w-[50%] flex flex-col justify-start items-start mt-5">
             <div className="font-sans text-[#ffffffec] text-sm">Email</div>
             <Input
-              value="galibamhamudjim@gmail.com"
+              value={email}
               size="large"
               placeholder=""
-              className="custom-input mt-3"
+              className="custom-input mt-3 !text-[#ffffff83]"
+              readOnly={true}
+              disabled={true}
             />
           </div>
           <div className="w-[50%] flex flex-col justify-start items-start mt-5">
