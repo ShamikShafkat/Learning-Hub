@@ -1,16 +1,68 @@
 import "../App.css";
-import NavBar from "../Auth/Component/navbar";
+import NavBar from "../components/navbar";
 import { MdOutlineEmail } from "react-icons/md";
 import { MdLockOutline } from "react-icons/md";
 import { GoBookmarkFill } from "react-icons/go";
 import { FaCamera } from "react-icons/fa";
-import { Input } from "antd";
+import { Input, theme } from "antd";
 import { Link } from "@nextui-org/react";
 import { CiLogout } from "react-icons/ci";
 import { Button } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
+import UserContext from "../context/UserContext";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
 const onSearch = (value) => console.log(value);
+
 const { Search } = Input;
 function Profile() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+  const { logout, user } = useContext(UserContext);
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user]);
+  const logoutHandle = async (e) => {
+    localStorage.removeItem("accessToken");
+
+    try {
+      const res = await axios
+        .post("http://localhost:8000/auth/logout/", {
+          headers: {
+            accessToken: user.accessToken,
+          },
+        })
+        .then((res) => {
+          toast.success("Logged out successfully");
+          console.log(res.data);
+          if (res.data.status === 200) {
+            toast.success("Logged out successfully", {});
+          }
+          localStorage.removeItem("accessToken");
+          logout();
+          navigate("/login");
+        });
+    } catch (error) {
+      const res = error.response.status;
+      if (res === 400 || res === 404) {
+        toast.error("Something went wrong", {});
+
+        localStorage.removeItem("accessToken");
+        logout();
+      } else {
+        toast.error("Something went wrong", {});
+
+        localStorage.removeItem("accessToken");
+        logout();
+      }
+      console.log(error);
+    }
+  };
   return (
     <div className="App bg-[#0f1521] w-screen min-h-screen">
       <header className="flex flex-col w-[100vw] justify-center items-center h-[20vh] z-50 fixed">
@@ -34,8 +86,11 @@ function Profile() {
         </ul>
         <div className="w-[40%]  z-10 flex h-full flex-col justify-center items-start ">
           <div className=" flex flex-col bg-[#FFFFFF09] w-[60%] justify-start items-start  h-[50vh] font-sans text-lg text-white font-semibold ml-[15%]  rounded-lg border-2 border-[#ffffff2a]">
-            <Link
-              href="/profile"
+            <div
+              onClick={() => {
+                navigate("/profile");
+              }}
+              // href="/profile"
               className="flex flex-row w-full border-y-[1px] bg-[#7f787847] border-[#fffdfd2c] pl-5 pr-5 py-3 pt-5 justify-center items-center hover:bg-[#615a5aa9] hover:border-y-[1px] hover:border-[#fffdfd2c]"
             >
               <div className="w-full flex flex-row gap-5 justify-center items-center ">
@@ -47,7 +102,7 @@ function Profile() {
                   My Account
                 </h1>
               </div>
-            </Link>
+            </div>
 
             <Link
               href="/password"
@@ -80,7 +135,10 @@ function Profile() {
               href="/profile"
               className="flex flex-row w-full border-y-[1px] border-transparent pl-5 pr-5 py-3 pt-5 justify-center items-center hover:bg-[#615a5a18] hover:border-y-[1px] hover:border-[#fffdfd2c]"
             >
-              <div className="w-full flex flex-row gap-5 justify-center items-center ">
+              <div
+                className="w-full flex flex-row gap-5 justify-center items-center "
+                onClick={logoutHandle}
+              >
                 <CiLogout className="w-[17%] h-[83%]" />
 
                 <h1 className="flex-nowrap w-[83%] h-full flex-col text-left h-full mt-[-5px]">

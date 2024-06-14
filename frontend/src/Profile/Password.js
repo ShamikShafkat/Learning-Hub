@@ -1,5 +1,5 @@
 import "../App.css";
-import NavBar from "../Auth/Component/navbar";
+import NavBar from "../components/navbar";
 import { MdOutlineEmail } from "react-icons/md";
 import { MdLockOutline } from "react-icons/md";
 import { GoBookmarkFill } from "react-icons/go";
@@ -7,10 +7,69 @@ import { FaCamera } from "react-icons/fa";
 import { Input } from "antd";
 import { Link } from "@nextui-org/react";
 import { CiLogout } from "react-icons/ci";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useContext } from "react";
 import { Button } from "@mui/material";
+import UserContext from "../context/UserContext";
+
 const onSearch = (value) => console.log(value);
+
 const { Search } = Input;
+
 function Password() {
+  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user]);
+  const handlePassowordChange = async (e) => {
+    e.preventDefault();
+    try {
+      if (password === "" || newPassword === "" || confirmPassword === "") {
+        toast.error("All fields are required");
+      } else if (newPassword !== confirmPassword) {
+        toast.error("Password does not match");
+      } else {
+        await axios
+          .put(
+            "http://localhost:8000/users/change_password/",
+            {
+              old_password: password,
+              new_password: newPassword,
+            },
+            {
+              headers: {
+                accessToken: user.accessToken,
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .then((res) => {
+            console.log(res.data);
+            toast.success("Password updated successfully", {});
+          });
+      }
+    } catch (error) {
+      console.log(error);
+      const res = error.response.status;
+      if (res === 400) {
+        toast.error("Incorrect Password", {});
+      } else if (res === 401) {
+        toast.error("Unauthorized", {});
+      } else {
+        toast.error("Something went wrong", {});
+      }
+    }
+  };
   return (
     <div className="App bg-[#0f1521] w-screen min-h-screen">
       <header className="flex flex-col w-[100vw] justify-center items-center h-[20vh] z-50 fixed">
@@ -98,10 +157,11 @@ function Password() {
               Enter old password
             </div>
             <Input
-              value="Galib Mahmud Jim"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               size="large"
               type="password"
-              placeholder=""
+              placeholder="Enter old password"
               className="custom-input mt-3"
             />
           </div>
@@ -110,10 +170,11 @@ function Password() {
               Enter new password
             </div>
             <Input
-              value="Galib Jim"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
               size="large"
               type="password"
-              placeholder=""
+              placeholder="Enter new password"
               className="custom-input mt-3"
             />
           </div>
@@ -122,10 +183,11 @@ function Password() {
               Confirm your password
             </div>
             <Input
-              value="Galib Jim"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               size="large"
               type="password"
-              placeholder=""
+              placeholder="Confirm your password"
               className="custom-input mt-3"
             />
           </div>
@@ -135,6 +197,7 @@ function Password() {
               className=" mt-5 text-white"
               styles="border-shade-200  shadow-sm text-shade-700  py-10"
               left={true}
+              onClick={handlePassowordChange}
             >
               <h1 className="text-white">Update</h1>
             </Button>

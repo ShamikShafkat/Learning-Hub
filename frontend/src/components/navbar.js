@@ -1,8 +1,11 @@
 import React from "react";
 import Button from "@mui/material/Button";
 import { Link } from "@nextui-org/react";
-
+import { useContext } from "react";
+import UserContext from "../context/UserContext";
 export default function NavBar() {
+  const { user } = useContext(UserContext);
+
   return (
     <div className="w-screen z-[1000] h-[12vh] top-0 fixed bg-[#0f1521] border-b-[1px] border-[#dcecfc4e] flex flex-row justify-between items-center py-4 px-7 ">
       <div className="w-[20%] flex flex-row justify-start items-center">
@@ -27,9 +30,15 @@ export default function NavBar() {
             <Link href="/#">FAQ</Link>
           </li>
           <li>
-            <Link href="/login">
-              <Button variant="outlined">Join</Button>
-            </Link>
+            {user ? (
+              <Link href="/profile">
+                <Button variant="outlined">Profile</Button>
+              </Link>
+            ) : (
+              <Link href="/login">
+                <Button variant="outlined">Join</Button>
+              </Link>
+            )}
           </li>
         </ul>
       </div>

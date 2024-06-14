@@ -1,11 +1,19 @@
 import "./login.css";
 import NavBar from "../../components/navbar";
-import { Input } from "antd";
+import { Input, theme } from "antd";
 import { CiLock } from "react-icons/ci";
 import { MdOutlineEmail } from "react-icons/md";
 import { Button } from "@mui/material";
 import { FcGoogle } from "react-icons/fc";
-import { Link } from "@nextui-org/react";
+import { Link, user } from "@nextui-org/react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useContext } from "react";
+import UserContext from "../../context/UserContext";
+import { useNavigate } from "react-router-dom";
+
+import { toast } from "react-toastify";
 const SignUpCTA = () => {
   const handleForgotPasswordClick = () => {};
   return (
@@ -55,6 +63,70 @@ const Oauth = () => {
   );
 };
 function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const { login, logout, user } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/profile");
+    }
+  }, []);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios
+        .post(
+          "http://localhost:8000/auth/login/",
+          {
+            email: email,
+            password: password,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then(async (res) => {
+          console.log(res.headers);
+          toast.success("Logged in successfully", {});
+          localStorage.setItem("accessToken", res.headers["accesstoken"]);
+          login({
+            email: email,
+            accessToken: res.headers["accesstoken"],
+          });
+
+          await axios
+            .get("http://localhost:8000/users/profile/", {
+              headers: {
+                accessToken: res.headers["accesstoken"],
+              },
+            })
+            .then((res1) => {
+              const data = res1.data.data[0];
+              console.log(
+                Object.assign({ accessToken: res.headers["accesstoken"] }, data)
+              );
+              login(
+                Object.assign({ accessToken: res.headers["accesstoken"] }, data)
+              );
+            });
+          navigate("/");
+        });
+    } catch (error) {
+      const errorData = error.response.status;
+      if (errorData == 400 || errorData == 404) {
+        toast.error("Invalid credentials");
+      } else {
+        toast.error("Something went wrong");
+      }
+      console.log(error);
+    }
+  };
+
   return (
     <div className="App bg-[#0f1521] w-screen min-h-screen">
       <header className="flex flex-col w-[100vw] justify-center items-center  z-[100] fixed">
@@ -85,24 +157,77 @@ function Login() {
           <div className="text-lg mt-5 font-normal text-white">
             Please enter your credentials to continue
           </div>
-          <div className="w-[400px] mt-[30px] flex flex-col text-[#ffffff] font-bold text-[18px] justify-center items-start">
-            <div className="font-sans text-[#fff9] text-sm">Email</div>
-            <Input
-              size="large"
-              placeholder="Enter your password"
-              className="custom-input mt-3"
-              prefix={<MdOutlineEmail />}
-            />
-            <div className="font-sans text-[#fff9] mt-5 text-sm">Password</div>
-            <Input
-              size="large"
-              type="password"
-              placeholder="Enter your email"
-              className="custom-input mt-3"
-              prefix={<CiLock />}
-            />
+          <form
+            className="w-[400px] mt-[30px] flex flex-col text-[#ffffff] font-bold text-[18px] justify-center items-start"
+            onSubmit={(e) => {
+              if (email == "" || password == "") {
+                e.preventDefault();
+                toast.error("Please fill all the fields", {
+                  theme: "dark",
+                });
+              } else {
+                handleSubmit(e);
+              }
+            }}
+          >
+            <>
+              <label
+                htmlFor="username"
+                className="font-sans text-[#fff9] text-sm"
+              >
+                Email
+              </label>
+              <Input
+                size="large"
+                placeholder="Enter your email"
+                className="custom-input mt-3"
+                onChange={(e) => setEmail(e.target.value)}
+                value={email}
+                autoComplete="email"
+                prefix={<MdOutlineEmail />}
+              />
+            </>
+            <>
+              <label
+                htmlFor="password"
+                className="font-sans text-[#fff9] mt-5 text-sm"
+              >
+                Password
+              </label>
+              <Input
+                size="large"
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+                type={showPassword ? "password" : "text"}
+                placeholder="Enter your password"
+                className="custom-input mt-3"
+                autoComplete="current-password"
+                prefix={<CiLock />}
+                suffix={
+                  <span style={{ cursor: "pointer" }}>
+                    {showPassword ? (
+                      <FaEye
+                        onClick={() => {
+                          setShowPassword(!showPassword);
+                        }}
+                      />
+                    ) : (
+                      <FaEyeSlash
+                        onClick={() => {
+                          setShowPassword(!showPassword);
+                        }}
+                      />
+                    )}
+                  </span>
+                }
+              />
+            </>
             <div className="w-full mt-5">
-              <Button variant="contained" className="w-full mt-10">
+              <Button
+                type="submit"
+                variant="contained"
+                className="w-full mt-10"
+              >
                 <div className="text-lg font-sans tracking-tighter font-bold ">
                   LOGIN
                 </div>
@@ -111,7 +236,7 @@ function Login() {
             <SignUpCTA />
             <Oauth />
             <div className="mb-[100px]"></div>
-          </div>
+          </form>
         </div>
       </main>
     </div>

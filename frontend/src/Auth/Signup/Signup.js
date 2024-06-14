@@ -8,29 +8,112 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link } from "@nextui-org/react";
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
-import Password from "antd/es/input/Password";
+import React, { useEffect } from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const handleSignup = async (profile) => {
-  try {
-    let user = JSON.parse(JSON.stringify(profile));
-    console.log(user);
-    const response = await axios.post(
-      "http://localhost:8000/auth/register/",
-      user,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    console.log(response);
-  } catch (error) {
-    console.error("Error:", error);
-    // Handle the error as needed
-  }
+import { toast } from "react-toastify";
+
+let isVisible = false;
+
+const OTPVerification = ({ values }) => {
+  const [verificationCode, setVerificationCode] = useState("");
+  const navigate = useNavigate();
+  const handleOtp = async (email, otp) => {
+    try {
+      const response = await axios
+        .post(
+          "http://localhost:8000/auth/verifyEmail/",
+          {
+            email: email,
+            token: otp,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            isVisible = false;
+            toast.success("Verification Successful", {
+              position: "top-right",
+              autoClose: 3000,
+              theme: "dark",
+              pauseOnHover: false,
+            });
+            navigate("/login", { shallow: true });
+          } else if (res.status === 400) {
+            toast.error("Your verification code has been expired.", {
+              position: "top-right",
+              autoClose: 3000,
+              theme: "dark",
+              pauseOnHover: false,
+            });
+          } else {
+            toast.error("Verification Failed.", {
+              position: "top-right",
+              autoClose: 3000,
+              theme: "dark",
+              pauseOnHover: false,
+            });
+          }
+
+          console.log(res);
+          return null;
+        });
+    } catch (error) {
+      console.error("Error:", error);
+
+      toast.error("Verification Failed", {
+        position: "top-right",
+        theme: "dark",
+      });
+      window.location.reload();
+    }
+  };
+
+  if (!isVisible) return null;
+  return (
+    <div className="fixed  inset-0 z-[1000] bg-black backdrop-blur-sm bg-opacity-25 h-screen w-screen flex flex-col items-center justify-center otp">
+      <div className="w-[663px] h-[475px] bg-white rounded-lg flex flex-col justify-center items-center container">
+        <div className="text-black text-[28px] font-bold font-opensans title">
+          OTP Verification
+        </div>
+        <div className="w-[80%] h-[30%] mt-[5%] p-5 rounded-lg bg-emerald-100 flex flex-col justify-center items-center instru-con">
+          <div className="w-full text-center text-green-700 text-[22px] font-normal font-opensans instruction">
+            We’ve sent a verification code to your email <br />
+            <span className="font-bold">#{values.email}</span>
+          </div>
+        </div>
+        <div className="w-full flex flex-col justify-center items-center ">
+          <input
+            name="otp"
+            type="text"
+            placeholder="Enter your verification code"
+            value={verificationCode}
+            onChange={(e) => setVerificationCode(e.target.value)}
+            className="w-[80%] h-15 mt-7  py-[19px] bg-white rounded-[10px] border border-stone-300 justify-start items-center input font-extrabold text-xl text-center "
+          />
+          <div className="w-full mt-5">
+            <Button
+              variant="outlined"
+              className="w-[20%]"
+              onClick={() => {
+                handleOtp(values.email, verificationCode);
+              }}
+            >
+              <div className="text-lg font-sans tracking-tighter font-bold ">
+                Submit
+              </div>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
-
 const SignUpCTA = () => {
   const handleForgotPasswordClick = () => {};
   return (
@@ -72,6 +155,10 @@ const Oauth = () => {
   );
 };
 function Signup() {
+  useEffect(() => {
+    console.log(isVisible);
+  }, [isVisible]);
+
   const [profile, setProfile] = useState({
     name: "",
     email: "",
@@ -79,8 +166,50 @@ function Signup() {
     phone_number: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const handleSignup = async (profile) => {
+    try {
+      let user = JSON.parse(JSON.stringify(profile));
+      console.log(user);
+      const response = await axios
+        .post("http://localhost:8000/auth/register/", user, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res) => {
+          isVisible = true;
+          toast.success("OTP Sent", {
+            position: "top-right",
+            autoClose: 3000,
+            theme: "dark",
+          });
+
+          console.log(res);
+        });
+    } catch (error) {
+      // window.location.reload();
+      const res = error.response.status;
+      if (res === 400) {
+        toast.error("User already exists", {
+          position: "top-right",
+          autoClose: 3000,
+          theme: "dark",
+        });
+      } else {
+        toast.error("Signup Failed", {
+          position: "top-right",
+          autoClose: 3000,
+          theme: "dark",
+        });
+      }
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <div className="App bg-[#0f1521] w-screen min-h-screen">
+      <OTPVerification values={profile} />
       <header className="flex flex-col w-[100vw] justify-center items-center  z-[100] fixed">
         <NavBar />
       </header>
