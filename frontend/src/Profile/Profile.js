@@ -13,10 +13,20 @@ import UserContext from "../context/UserContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
 
 const onSearch = (value) => console.log(value);
 
 const { Search } = Input;
+
+const convertToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+};
 function Profile() {
   const { logout, user, fetchUser } = useContext(UserContext);
   const [name, setName] = useState(user && user.name ? user.name : "");
@@ -25,6 +35,25 @@ function Profile() {
     user && user.phone_number ? user.phone_number : ""
   );
   const [img, setImg] = useState(user && user.image ? user.image : "");
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+  const fileInputRef = useRef(null);
+  const [image64, setImage64] = useState(null);
+  const handleImageClick = () => {
+    fileInputRef.current.click();
+  };
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        setImageUrl(reader.result);
+        const base64 = await convertToBase64(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -158,14 +187,34 @@ function Profile() {
             </Link>
           </div>
         </div>
+
         <div className="w-[55%]  flex flex-col justify-center items-center z-[1000]">
-          <div className="w-full flex flex-row w-full justify-center items-end">
-            <img
-              src="/home1img.png"
-              alt=""
-              className="w-[110px] rounded-[100px] border-[#ffffff77] border-2"
-            />
-            <FaCamera className="text-2xl ml-[-25px] text-[#ffffff40]" />
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={handleImageChange}
+            style={{ display: "none" }} // Hide the file input
+          />
+
+          <div
+            className="w-[110px] h-[110px] rounded-[500px] overflow-hidden flex flex-row  justify-center items-end cursor-pointer "
+            onClick={handleImageClick}
+          >
+            {imageUrl ? (
+              <img
+                src={imageUrl}
+                alt="Selected"
+                className="w-full h-full scale-[1.4]  border-[#ffffff77] border-2"
+              />
+            ) : (
+              <img
+                src={user && user.image ? user.image : user.image}
+                alt=""
+                className=" w-full h-full scale-[1.4] border-[#ffffff77] border-2"
+              />
+            )}
+            <FaCamera className=" absolute text-2xl ml-[50px] z-100 text-[#282222] shadow-xl stroke-white" />
           </div>
           <div className="w-[50%] flex flex-col justify-start items-start mt-10">
             <div className="font-sans text-[#ffffffec] text-sm">Full Name</div>
@@ -195,9 +244,7 @@ function Profile() {
               value={email}
               size="large"
               placeholder=""
-              className="custom-input mt-3 !text-[#ffffff83]"
-              readOnly={true}
-              disabled={true}
+              className="custom-input mt-3 !text-[#ffffff83] !border-[#ffffff61 !border-[1px] disabled:bg-[#ffffff09] disabled:text-[#ffffff83] disabled:border-[#ffffff61] disabled:cursor-not-allowed"
             />
           </div>
           <div className="w-[50%] flex flex-col justify-start items-start mt-5">
