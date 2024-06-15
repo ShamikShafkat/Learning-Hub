@@ -10,9 +10,11 @@ import { useEffect } from "react";
 import Loading from "./components/loading";
 import axios from "axios";
 import { useState } from "react";
+import { MenuProvider } from "./Provider/MenuProvider";
+import { UserProvider } from "./Provider/UserProvider";
+
 function App() {
   const [loading, setLoading] = useState(false);
-
   useEffect(() => {
     axios.interceptors.request.use(
       (config) => {
@@ -38,6 +40,13 @@ function App() {
     );
   }, []);
 
+  const ProtectedRoutes = () => (
+    <Routes>
+      <Route path="/password" element={<Password />} />
+      <Route path="/profile" element={<Profile />} />
+    </Routes>
+  );
+
   return (
     <BrowserRouter>
       <Loading show={loading} />
@@ -45,9 +54,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-
-        <Route path="/password" element={<Password />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/*" element={<ProtectedRoutes />} />
       </Routes>
     </BrowserRouter>
   );

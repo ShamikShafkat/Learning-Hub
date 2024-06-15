@@ -16,7 +16,7 @@ function Home() {
         <NavBar />
       </header>
       <main className="flex flex-row w-screen bg-[#0f1521] h-screen justify-center items-center h-[80vh] pt-[20vh]">
-        <ul class="background">
+        <ul className="background">
           <li></li>
           <li></li>
           <li></li>

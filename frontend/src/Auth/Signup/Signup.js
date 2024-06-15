@@ -60,7 +60,6 @@ const OTPVerification = ({ values }) => {
             });
           }
 
-          console.log(res);
           return null;
         });
     } catch (error) {
@@ -147,7 +146,7 @@ const Oauth = () => {
       variant="outlined"
       className="w-full"
       styles="border-shade-200 w-[400px] shadow-sm text-shade-700 mt-4 py-10"
-      left={true}
+      left="true"
       startIcon={<FcGoogle />}
     >
       Login with google
@@ -155,9 +154,7 @@ const Oauth = () => {
   );
 };
 function Signup() {
-  useEffect(() => {
-    console.log(isVisible);
-  }, [isVisible]);
+  useEffect(() => {}, [isVisible]);
 
   const [profile, setProfile] = useState({
     name: "",
@@ -170,7 +167,6 @@ function Signup() {
   const handleSignup = async (profile) => {
     try {
       let user = JSON.parse(JSON.stringify(profile));
-      console.log(user);
       const response = await axios
         .post("http://localhost:8000/auth/register/", user, {
           headers: {
@@ -184,8 +180,6 @@ function Signup() {
             autoClose: 3000,
             theme: "dark",
           });
-
-          console.log(res);
         });
     } catch (error) {
       // window.location.reload();
@@ -214,7 +208,7 @@ function Signup() {
         <NavBar />
       </header>
       <main className="flex flex-col w-screen min-h-screen justify-start items-center  pt-[10vh] pb-[100px]">
-        <ul class="background">
+        <ul className="background">
           <li></li>
           <li></li>
           <li></li>

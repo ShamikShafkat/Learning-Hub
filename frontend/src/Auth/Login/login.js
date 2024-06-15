@@ -55,7 +55,7 @@ const Oauth = () => {
       variant="outlined"
       className="w-full"
       styles="border-shade-200 w-[400px] shadow-sm text-shade-700 mt-4 py-10"
-      left={true}
+      left="true"
       startIcon={<FcGoogle />}
     >
       Login with google
@@ -91,7 +91,6 @@ function Login() {
           }
         )
         .then(async (res) => {
-          console.log(res.headers);
           toast.success("Logged in successfully", {});
           localStorage.setItem("accessToken", res.headers["accesstoken"]);
           await axios
@@ -106,7 +105,6 @@ function Login() {
                 accessToken: res.headers["accesstoken"],
               });
               setUser(d);
-              console.log(d);
             });
           navigate("/profile");
         });
@@ -127,7 +125,7 @@ function Login() {
         <NavBar />
       </header>
       <main className="flex flex-col w-screen min-h-screen justify-start items-center  pt-[10vh] pb-[100px]">
-        <ul class="background">
+        <ul className="background">
           <li></li>
           <li></li>
           <li></li>

@@ -1,61 +1,73 @@
 import "../App.css";
 import NavBar from "../components/navbar";
-import { MdOutlineEmail } from "react-icons/md";
-import { MdLockOutline } from "react-icons/md";
-import { GoBookmarkFill } from "react-icons/go";
 import { FaCamera } from "react-icons/fa";
 import { Input, theme } from "antd";
-import { Link } from "@nextui-org/react";
-import { CiLogout } from "react-icons/ci";
+import ProfileMenu from "../components/Users/ProfileMenu";
 import { Button } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
+import Background from "../components/Background";
 import UserContext from "../context/UserContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
-
-const onSearch = (value) => console.log(value);
+import MenuUserContext from "../context/MenuUserContext";
 
 const { Search } = Input;
 
-const convertToBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-};
 function Profile() {
+  const { menu, setMenu } = useContext(MenuUserContext);
   const { logout, user, fetchUser } = useContext(UserContext);
-  const [name, setName] = useState(user && user.name ? user.name : "");
-  const [email, setEmail] = useState(user && user.email ? user.email : "");
-  const [phone, setPhone] = useState(
-    user && user.phone_number ? user.phone_number : ""
-  );
-  const [img, setImg] = useState(user && user.image ? user.image : "");
+  const [name, setName] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [phone, setPhone] = useState(null);
+  const navigate = useNavigate();
+  const [img, setImg] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const fileInputRef = useRef(null);
   const [image64, setImage64] = useState(null);
-  const handleImageClick = () => {
-    fileInputRef.current.click();
-  };
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setSelectedImage(file);
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        setImageUrl(reader.result);
-        const base64 = await convertToBase64(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
-  const navigate = useNavigate();
+  setMenu("profile");
+  const cropImage = (base64) => {
+    const canvas = document.createElement("canvas");
+    const img = new Image();
+    img.src = base64;
+    img.onload = () => {
+      canvas.width = 100;
+      canvas.height = 100;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, 100, 100);
+      let croppedBase64 = canvas.toDataURL();
+      croppedBase64 = croppedBase64.replace(
+        /^data:image\/(png|jpg);base64,/,
+        ""
+      );
+      setImage64(croppedBase64);
+    };
+  };
+  function convertToBase64(file) {
+    return new Promise((resolve, reject) => {
+      if (!(file instanceof Blob)) {
+        console.error("Input is not a Blob or File", file);
+        reject("Input is not a Blob or File");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+
+      reader.onloadend = () => {
+        let base64 = reader.result;
+        cropImage(base64);
+      };
+
+      reader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  }
+
   useEffect(() => {
     if (user) {
       setEmail(user.email ? user.email : "");
@@ -66,39 +78,56 @@ function Profile() {
       navigate("/login");
     }
   }, [user]);
-  const logoutHandle = async (e) => {
-    localStorage.removeItem("accessToken");
 
+  const handleImageClick = () => {
+    fileInputRef.current.click();
+  };
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        setImageUrl(reader.result);
+      };
+      convertToBase64(file)
+        .then(async (base64) => {
+          setImage64(base64);
+          console.log("🚀 ~ .then ~ base64:", base64);
+        })
+        .catch((error) => {
+          console.error("Error converting file to base64:", error);
+        });
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const updateProfile = async () => {
+    let newData = {
+      name: name,
+      email: email,
+      phone_number: phone,
+    };
+    if (image64) {
+      newData.image = image64;
+    }
+    console.log(newData);
     try {
-      const res = await axios
-        .post("http://localhost:8000/auth/logout/", {
+      await axios
+        .put("http://localhost:8000/users/update_profile", newData, {
           headers: {
             accessToken: user.accessToken,
           },
         })
         .then((res) => {
-          toast.success("Logged out successfully");
-          console.log(res.data);
-          if (res.data.status === 200) {
-            toast.success("Logged out successfully", {});
-          }
-          localStorage.removeItem("accessToken");
-          logout();
-          navigate("/login");
+          toast.success("Profile updated successfully", {});
         });
+      window.location.reload();
     } catch (error) {
-      const res = error.response.status;
-      if (res === 400 || res === 404) {
-        toast.error("Something went wrong", {});
+      const res = error.response;
+      console.log("🚀 ~ updateProfile ~ res:", res.data);
 
-        localStorage.removeItem("accessToken");
-        logout();
-      } else {
-        toast.error("Something went wrong", {});
-
-        localStorage.removeItem("accessToken");
-        logout();
-      }
+      toast.error(res.data.message, {});
       console.log(error);
     }
   };
@@ -108,87 +137,9 @@ function Profile() {
         <NavBar />
       </header>
       <main className="flex flex-row w-screen bg-[#0f1521] h-screen justify-center items-center h-[80vh] pt-[20vh] z-50">
-        <ul class="background">
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-        </ul>
-        <div className="w-[40%]  z-10 flex h-full flex-col justify-center items-start ">
-          <div className=" flex flex-col bg-[#FFFFFF09] w-[60%] justify-start items-start  h-[50vh] font-sans text-lg text-white font-semibold ml-[15%]  rounded-lg border-2 border-[#ffffff2a]">
-            <div
-              onClick={() => {
-                navigate("/profile");
-              }}
-              // href="/profile"
-              className="flex flex-row w-full border-y-[1px] bg-[#7f787847] border-[#fffdfd2c] pl-5 pr-5 py-3 pt-5 justify-center items-center hover:bg-[#615a5aa9] hover:border-y-[1px] hover:border-[#fffdfd2c]"
-            >
-              <div className="w-full flex flex-row gap-5 justify-center items-center ">
-                <div className="w-[17%]">
-                  <img src="/home1img.png" alt="" className="" />
-                </div>
-
-                <h1 className="flex-nowrap w-[83%] h-full flex-col text-left h-full mt-[-5px]">
-                  My Account
-                </h1>
-              </div>
-            </div>
-
-            <Link
-              href="/password"
-              className="flex flex-row w-full border-y-[1px] border-transparent pl-5 pr-5 py-3 pt-5 justify-center items-center hover:bg-[#615a5a18] hover:border-y-[1px] hover:border-[#fffdfd2c]"
-            >
-              <div className="w-full flex flex-row gap-5 justify-center items-center focus:bg-transparent ">
-                <MdLockOutline className="w-[17%] h-[83%]" />
-
-                <h1 className="flex-nowrap w-[83%] h-full flex-col text-left h-full mt-[-5px]">
-                  Password
-                </h1>
-              </div>
-            </Link>
-            <Link
-              href="/profile"
-              className="flex flex-row w-full border-y-[1px] border-transparent pl-5 pr-5 py-3 pt-5 justify-center items-center hover:bg-[rgba(97,90,90,0.09)] hover:border-y-[1px] hover:border-[#fffdfd2c]"
-            >
-              <div
-                href="/profile"
-                className="w-full flex flex-row gap-5 justify-center items-center "
-              >
-                <GoBookmarkFill className="w-[17%] h-[83%]" />
-
-                <h1 className="flex-nowrap w-[83%] h-full flex-col text-left h-full mt-[-5px]">
-                  Enrolled Courses
-                </h1>
-              </div>
-            </Link>
-            <Link
-              href="/profile"
-              className="flex flex-row w-full border-y-[1px] border-transparent pl-5 pr-5 py-3 pt-5 justify-center items-center hover:bg-[#615a5a18] hover:border-y-[1px] hover:border-[#fffdfd2c]"
-            >
-              <div
-                className="w-full flex flex-row gap-5 justify-center items-center "
-                onClick={logoutHandle}
-              >
-                <CiLogout className="w-[17%] h-[83%]" />
-
-                <h1 className="flex-nowrap w-[83%] h-full flex-col text-left h-full mt-[-5px]">
-                  Logout
-                </h1>
-              </div>
-            </Link>
-          </div>
-        </div>
-
-        <div className="w-[55%]  flex flex-col justify-center items-center z-[1000]">
+        <Background />
+        <ProfileMenu />
+        <div className="w-[55%]  flex flex-col justify-center items-center z-[10]">
           <input
             type="file"
             accept="image/*"
@@ -209,7 +160,7 @@ function Profile() {
               />
             ) : (
               <img
-                src={user && user.image ? user.image : user.image}
+                src={user && user.image ? user.image : ""}
                 alt=""
                 className=" w-full h-full scale-[1.4] border-[#ffffff77] border-2"
               />
@@ -233,6 +184,7 @@ function Profile() {
             </div>
             <Input
               value={phone}
+              onChange={(e) => setPhone(e.target.value)}
               size="large"
               placeholder=""
               className="custom-input mt-3 "
@@ -252,7 +204,8 @@ function Profile() {
               variant="contained"
               className=" mt-5 text-white"
               styles="border-shade-200  shadow-sm text-shade-700  py-10"
-              left={true}
+              left="true"
+              onClick={updateProfile}
             >
               <h1 className="text-white">Update</h1>
             </Button>
