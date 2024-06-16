@@ -111,14 +111,15 @@ function ForgetPassword() {
     const [showPassword, setShowPassword] = useState(false);
 
     const navigate = useNavigate();
-    const handleOtp = async () => {
+    const handleNewPassword = async () => {
       try {
         const response = await axios
-          .post(
-            "http://localhost:8000/auth/verifyEmail/",
+          .put(
+            "http://localhost:8000/auth/forget_password/confirm",
             {
               email: email,
               token: otp,
+              password: newPassword,
             },
             {
               headers: {
@@ -127,41 +128,13 @@ function ForgetPassword() {
             }
           )
           .then((res) => {
-            if (res.status === 200) {
-              isVisible = false;
-              toast.success("Verification Successful", {
-                position: "top-right",
-                autoClose: 3000,
-                theme: "dark",
-                pauseOnHover: false,
-              });
-              navigate("/login", { shallow: true });
-            } else if (res.status === 400) {
-              toast.error("Your verification code has been expired.", {
-                position: "top-right",
-                autoClose: 3000,
-                theme: "dark",
-                pauseOnHover: false,
-              });
-            } else {
-              toast.error("Verification Failed.", {
-                position: "top-right",
-                autoClose: 3000,
-                theme: "dark",
-                pauseOnHover: false,
-              });
-            }
-
-            return null;
+            toast.success("Password Reset Successfully");
+            navigate("/login");
           });
       } catch (error) {
-        console.error("Error:", error);
-
-        toast.error("Verification Failed", {
-          position: "top-right",
-          theme: "dark",
-        });
         window.location.reload();
+        const res = error.response;
+        toast.error(res.data.message);
       }
     };
 
@@ -188,7 +161,7 @@ function ForgetPassword() {
                 variant="outlined"
                 className="w-[20%]"
                 onClick={() => {
-                  handleOtp();
+                  handleNewPassword();
                 }}
               >
                 <div className="text-lg font-sans tracking-tighter font-bold ">
