@@ -6,18 +6,17 @@ import ProfileMenu from "../components/Users/ProfileMenu";
 import { Button } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import Background from "../components/Background";
-import UserContext from "../context/UserContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
-import MenuUserContext from "../context/MenuUserContext";
-
+import { useUser } from "../Provider/UserProvider";
+import { useMenu } from "../Provider/MenuProvider";
 const { Search } = Input;
 
 function Profile() {
-  const { menu, setMenu } = useContext(MenuUserContext);
-  const { logout, user, fetchUser } = useContext(UserContext);
+  const { menu, setMenu } = useMenu();
+  const { logout, user } = useUser();
   const [name, setName] = useState(null);
   const [email, setEmail] = useState(null);
   const [phone, setPhone] = useState(null);
@@ -27,7 +26,6 @@ function Profile() {
   const [imageUrl, setImageUrl] = useState(null);
   const fileInputRef = useRef(null);
   const [image64, setImage64] = useState(null);
-
   setMenu("profile");
   const cropImage = (base64) => {
     const canvas = document.createElement("canvas");
@@ -74,8 +72,6 @@ function Profile() {
       setName(user.name ? user.name : "");
       setPhone(user.phone_number ? user.phone_number : "");
       setImg(user.image ? user.image : "");
-    } else {
-      navigate("/login");
     }
   }, [user]);
 
@@ -93,7 +89,6 @@ function Profile() {
       convertToBase64(file)
         .then(async (base64) => {
           setImage64(base64);
-          console.log("🚀 ~ .then ~ base64:", base64);
         })
         .catch((error) => {
           console.error("Error converting file to base64:", error);
@@ -111,7 +106,6 @@ function Profile() {
     if (image64) {
       newData.image = image64;
     }
-    console.log(newData);
     try {
       await axios
         .put("http://localhost:8000/users/update_profile", newData, {
@@ -125,7 +119,6 @@ function Profile() {
       window.location.reload();
     } catch (error) {
       const res = error.response;
-      console.log("🚀 ~ updateProfile ~ res:", res.data);
 
       toast.error(res.data.message, {});
       console.log(error);

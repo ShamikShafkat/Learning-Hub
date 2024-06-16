@@ -13,6 +13,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { toast } from "react-toastify";
+import { useAuth } from "../../Provider/AuthProvider";
 
 let isVisible = false;
 
@@ -155,6 +156,13 @@ const Oauth = () => {
 };
 function Signup() {
   useEffect(() => {}, [isVisible]);
+  const { isAuth } = useAuth();
+
+  useEffect(() => {
+    if (isAuth) {
+      navigate("/profile", { replace: true });
+    }
+  }, [isAuth]);
 
   const [profile, setProfile] = useState({
     name: "",

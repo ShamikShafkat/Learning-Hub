@@ -5,56 +5,39 @@ import { MdLockOutline } from "react-icons/md";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import UserContext from "../../context/UserContext";
 import axios from "axios";
-import MenuUserContext from "../../context/MenuUserContext";
 import "./UserMenu.css";
-
+import { useUser } from "../../Provider/UserProvider";
+import { useMenu } from "../../Provider/MenuProvider";
+import { useAuth } from "../../Provider/AuthProvider";
 const ProfileMenu = () => {
-  const { logout, user } = useContext(UserContext);
   const navigate = useNavigate();
-  const { menu, setMenu } = useContext(MenuUserContext);
-  useEffect(() => {
-    if (!user) {
-      navigate("/login");
-    }
-  }, [user]);
-  const logoutHandle = async (e) => {
-    localStorage.removeItem("accessToken");
+  const { user, logout } = useUser();
+  const { menu, setMenu } = useMenu();
 
-    try {
-      const res = await axios
-        .post("http://localhost:8000/auth/logout/", {
-          headers: {
-            accessToken: user.accessToken,
-          },
-        })
-        .then((res) => {
-          toast.success("Logged out successfully");
-          if (res.data.status === 200) {
-            toast.success("Logged out successfully", {});
-          }
-          localStorage.removeItem("accessToken");
-          logout();
-          navigate("/login");
-        });
-    } catch (error) {
-      const res = error.response.status;
-      if (res === 400 || res === 404) {
-        toast.error("Something went wrong", {});
+  const logoutHandle = () => {
+    logout();
+    // try {
+    //   const res = await axios
+    //     .post("http://localhost:8000/auth/logout/", {
+    //       headers: {
+    //         accessToken: user.accessToken,
+    //       },
+    //     })
+    //     .then((res) => {
+    //       toast.success("Logged out successfully");
+    //       if (res.data.status === 200) {
+    //         toast.success("Logged out successfully", {});
 
-        localStorage.removeItem("accessToken");
-        logout();
-        navigate("/login");
-      } else {
-        toast.error("Something went wrong", {});
-
-        localStorage.removeItem("accessToken");
-        logout();
-        navigate("/login");
-      }
-      console.log(error);
-    }
+    //         logout();
+    //       }
+    //     });
+    // } catch (error) {
+    //   const res = error.response.data;
+    //   toast.error(res.message);
+    //   logout();
+    //   console.log(error);
+    // }
   };
   return (
     <div className="w-[40%]  z-10 flex h-full flex-col justify-center items-start ">
@@ -69,7 +52,9 @@ const ProfileMenu = () => {
         >
           <div className="w-full flex flex-row gap-5 justify-center items-center ">
             <div className="w-[17%]">
-              <img src={user.image} alt="" className="rounded-3xl" />
+              {user && user.image ? (
+                <img src={user.image} alt="" className="rounded-3xl" />
+              ) : null}
             </div>
 
             <h1 className="flex-nowrap w-[83%] h-full flex-col text-left h-full mt-[-5px]">
@@ -115,7 +100,9 @@ const ProfileMenu = () => {
         >
           <div
             className="w-full flex flex-row gap-5 justify-center items-center "
-            onClick={logoutHandle}
+            onClick={() => {
+              logoutHandle();
+            }}
           >
             <CiLogout className="w-[17%] h-[83%]" />
 

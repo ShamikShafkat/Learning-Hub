@@ -2,9 +2,10 @@ import React from "react";
 import Button from "@mui/material/Button";
 import { Link } from "@nextui-org/react";
 import { useContext } from "react";
-import UserContext from "../context/UserContext";
+import { useUser } from "../Provider/UserProvider";
+import { useAuth } from "../Provider/AuthProvider";
 export default function NavBar() {
-  const { user } = useContext(UserContext);
+  const { isAuth } = useAuth();
 
   return (
     <div className="w-screen z-[1000] h-[12vh] top-0 fixed bg-[#0f1521] border-b-[1px] border-[#dcecfc4e] flex flex-row justify-between items-center py-4 px-7 ">
@@ -30,7 +31,7 @@ export default function NavBar() {
             <Link href="/#">FAQ</Link>
           </li>
           <li>
-            {user ? (
+            {isAuth ? (
               <Link href="/profile">
                 <Button variant="outlined">Profile</Button>
               </Link>

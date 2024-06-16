@@ -14,21 +14,21 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useContext } from "react";
 import { Button } from "@mui/material";
-import UserContext from "../context/UserContext";
 import Background from "../components/Background";
 import ProfileMenu from "../components/Users/ProfileMenu";
-import MenuUserContext from "../context/MenuUserContext";
+import { useMenu } from "../Provider/MenuProvider";
+import { useUser } from "../Provider/UserProvider";
 
 const onSearch = (value) => console.log(value);
 
 const { Search } = Input;
 
 function Password() {
-  const { menu, setMenu } = useContext(MenuUserContext);
+  const { menu, setMenu } = useMenu();
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const navigate = useNavigate();
   setMenu("password");
   useEffect(() => {
@@ -66,6 +66,7 @@ function Password() {
       const res = error.response.status;
       if (res === 400) {
         toast.error("Incorrect Password", {});
+        
       } else if (res === 401) {
         toast.error("Unauthorized", {});
       } else {

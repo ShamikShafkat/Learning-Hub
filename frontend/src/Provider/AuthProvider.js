@@ -1,28 +1,36 @@
-import React, { createContext, useState } from "react";
-import AuthContext from "../context/AuthContext";
-import UserContext from "../context/UserContext";
-import { useContext } from "react";
-import { useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { useUser } from "./UserProvider";
+import Loading from "../components/loading";
+
+const AuthContext = createContext();
+
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
+
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const { user, setUser } = useContext(UserContext);
+  const [isAuth, setIsAuth] = useState(null);
+  const { user, setUser, flag } = useUser();
+  const [Auth, setAuth] = useState(null);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (user) {
-      setIsAuthenticated(true);
+      setIsAuth(true);
     } else {
-      setIsAuthenticated(false);
+      setIsAuth(false);
     }
   }, [user]);
-
-  const logout = () => {
-    setUser(null);
-    setIsAuthenticated(false);
-    localStorage.removeItem("accessToken");
-  };
+  useEffect(() => {
+    if (flag) {
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+  }, [flag]);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, logout }}>
-      {children}
+    <AuthContext.Provider value={{ isAuth, setIsAuth, loading }}>
+      {loading ? <Loading show={loading} /> : children}
     </AuthContext.Provider>
   );
 };

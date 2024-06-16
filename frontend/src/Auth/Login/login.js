@@ -10,10 +10,11 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useContext } from "react";
-import UserContext from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 
 import { toast } from "react-toastify";
+import { useUser } from "../../Provider/UserProvider";
+import { useAuth } from "../../Provider/AuthProvider";
 const SignUpCTA = () => {
   const handleForgotPasswordClick = () => {};
   return (
@@ -66,14 +67,14 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const { login, logout, user, setUser, fetchUser } = useContext(UserContext);
+  const { login, logout, user, setUser } = useUser();
+  const { isAuth } = useAuth();
   const navigate = useNavigate();
-
   useEffect(() => {
-    if (user) {
-      navigate("/profile");
+    if (isAuth) {
+      navigate("/profile", { replace: true });
     }
-  }, [user]);
+  }, [isAuth]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -104,9 +105,8 @@ function Login() {
               const d = Object.assign(data, {
                 accessToken: res.headers["accesstoken"],
               });
-              setUser(d);
+              login(d);
             });
-          navigate("/profile");
         });
     } catch (error) {
       const errorData = error.response.status;

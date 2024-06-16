@@ -11,7 +11,10 @@ import Loading from "./components/loading";
 import axios from "axios";
 import { useState } from "react";
 import { MenuProvider } from "./Provider/MenuProvider";
-import { UserProvider } from "./Provider/UserProvider";
+import { UserProvider, useUser } from "./Provider/UserProvider";
+import Root from "./Routes/Root";
+import { useAuth } from "./Provider/AuthProvider";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -40,23 +43,14 @@ function App() {
     );
   }, []);
 
-  const ProtectedRoutes = () => (
-    <Routes>
-      <Route path="/password" element={<Password />} />
-      <Route path="/profile" element={<Profile />} />
-    </Routes>
-  );
-
   return (
-    <BrowserRouter>
-      <Loading show={loading} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/*" element={<ProtectedRoutes />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <ToastContainer theme="dark" position="bottom-right" />
+      <UserProvider>
+        <Loading show={loading} />
+        <Root />
+      </UserProvider>
+    </>
   );
 }
 

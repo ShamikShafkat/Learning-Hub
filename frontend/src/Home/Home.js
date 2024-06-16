@@ -1,14 +1,14 @@
 import "../App.css";
 import NavBar from "../components/navbar";
 import { useContext } from "react";
-import UserContext from "../context/UserContext";
 import { useEffect } from "react";
 
 import { Input } from "antd";
+import { useUser } from "../Provider/UserProvider";
 const onSearch = (value) => console.log(value);
 const { Search } = Input;
 function Home() {
-  const { logout, user } = useContext(UserContext);
+  const { logout, user } = useUser();
 
   return (
     <div className="App bg-[#0f1521] w-screen min-h-screen">
