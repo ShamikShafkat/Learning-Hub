@@ -16,7 +16,10 @@ import { toast } from "react-toastify";
 import { useUser } from "../../Provider/UserProvider";
 import { useAuth } from "../../Provider/AuthProvider";
 const SignUpCTA = () => {
-  const handleForgotPasswordClick = () => {};
+  const navigate = useNavigate();
+  const handleForgotPasswordClick = () => {
+    navigate("/forgetpassword");
+  };
   return (
     <div className="flex mb-5 mt-6  flex-col justify-center w-[400px] items-center">
       <div className="flex flex-row justify-between items-center gap-[70px] mt-5 mb-5 w-full">

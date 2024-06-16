@@ -13,6 +13,7 @@ import Profile from "../Profile/Profile";
 import { AuthRoutes } from "./AuthRoutes";
 import { MenuProvider } from "../Provider/MenuProvider";
 import { ProtectedRoutes } from "./ProtectedRoutes";
+import ForgetPassword from "../Auth/ForgetPassword/ForgetPassword";
 
 function Root() {
   return (
@@ -21,6 +22,7 @@ function Root() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgetpassword" element={<ForgetPassword />} />
           <Route path="/" element={<Home />} />
           <Route path="/*" element={<ProtectedRoutes />} />
         </Routes>
