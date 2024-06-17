@@ -24,7 +24,7 @@ function Root() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgetpassword" element={<ForgetPassword />} />
           <Route path="/" element={<Home />} />
-          <Route path="/*" element={<ProtectedRoutes />} />
+          <Route path="*" element={<ProtectedRoutes />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
