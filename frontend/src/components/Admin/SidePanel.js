@@ -39,7 +39,6 @@ const SidePanel = () => {
         <div
           className="mr-[10px] cursor-pointer"
           onClick={() => {
-            console.log("clicked");
             setOpen(!open);
           }}
         >

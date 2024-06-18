@@ -3,14 +3,17 @@ import PasswordAdmin from "../Profile/Password";
 import ProfileAdmin from "../Profile/Profile";
 import AdminLayout from "../../Layout/AdminLayout";
 import NewCourse from "../Course/NewCourse";
-
+import AddSection from "../Course/AddSections";
+import AddLesson from "../Course/AddLocation";
 const AdminRoot = () => {
   return (
     <AdminLayout>
       <Routes>
         <Route path="/profile" element={<ProfileAdmin />} />
-                    <Route path="/password" element={<PasswordAdmin />} />
-                    <Route path="/create-course" element={<NewCourse />} />
+        <Route path="/password" element={<PasswordAdmin />} />
+        <Route path="/create-course" element={<NewCourse />} />
+        <Route path="/section/:id" element={<AddSection />} />
+        <Route path="/lesson/:course_id/:section_id" element={<AddLesson />} />
       </Routes>
     </AdminLayout>
   );

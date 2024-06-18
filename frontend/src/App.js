@@ -22,7 +22,7 @@ function App() {
     axios.interceptors.request.use(
       (config) => {
         setLoading(true);
-        console.log("Request Interceptor:", config);
+        // console.log("Request Interceptor:", config);
         return config;
       },
       (error) => {
@@ -33,7 +33,7 @@ function App() {
     axios.interceptors.response.use(
       (response) => {
         setLoading(false);
-        console.log("Response Interceptor:", response);
+        // console.log("Response Interceptor:", response);
         return response;
       },
       (error) => {

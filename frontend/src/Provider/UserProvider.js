@@ -74,7 +74,6 @@ export const UserProvider = ({ children }) => {
       logout();
       console.log(error);
     }
-    console.log("logout", user);
   };
 
   useEffect(() => {

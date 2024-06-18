@@ -8,7 +8,6 @@ import { useEffect } from "react";
 import AdminRoot from "../Admin/RouteAdmin/AdminRoot";
 
 const RoleBasedRoutes = (role) => {
-  console.log("RoleBasedRoutes", role.role);
   return (
     <Routes>
       {role.role === "ADMIN" ? (
