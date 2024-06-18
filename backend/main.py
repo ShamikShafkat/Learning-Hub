@@ -15,7 +15,12 @@ from starlette.middleware.sessions import SessionMiddleware
 
 app = FastAPI()
 
-origins = ["http://0.0.0.0:3000"]
+origins = [
+    "http://0.0.0.0:3000",  
+    "http://localhost:3000",  
+    "http://127.0.0.1:3000", 
+    # Add other origins as needed
+]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -24,9 +29,7 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["accessToken"] 
 )
-
 SECRET_KEY = os.environ.get('SECRET_KEY') or None
-print(SECRET_KEY)
 if SECRET_KEY is None:
     raise 'Missing SECRET_KEY'
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)

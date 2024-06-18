@@ -1,0 +1,32 @@
+/* styles.css */
+@keyframes slideLeft {
+      0% {
+            transform: translateX(-85%);
+      }
+
+      100% {
+            transform: translateX(0);
+      }
+}
+
+.open {
+      animation: slideLeft 0.5s forwards;
+}
+
+@keyframes slideRight {
+      0% {
+            transform: translateX(0);
+      }
+
+      100% {
+            transform: translateX(-85%);
+      }
+}
+
+.close {
+      animation: slideRight 0.5s forwards;
+}
+
+.active {
+      background-color: #f1f1f141;
+}

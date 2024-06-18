@@ -263,10 +263,12 @@ async def get_course(course_id : str):
         }
         # You can add more stages as needed
     ]
-
     courses_with_sections_and_lessons = await courses_collection.aggregate(pipeline).to_list(None)
     return success_response("Course fetched successfully.",courses_with_sections_and_lessons)
 
+         
+
+  
 @router.get("/ratings/{course_id}",status_code=status.HTTP_200_OK)
 async def get_ratings(course_id : str):
     course = await courses_collection.find_one({

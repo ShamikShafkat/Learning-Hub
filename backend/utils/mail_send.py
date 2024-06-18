@@ -69,8 +69,8 @@ async def verification_code_send(email: str, code: str):
         return True
 
 async def email_verification_code_send(email: str, code: str):
-        if(not verify_email_address(email)):
-                return False
+        # if(not verify_email_address(email)):
+        #         return False
         
         
         smtpserver = smtplib.SMTP_SSL('smtp.gmail.com', 465)
