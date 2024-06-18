@@ -60,7 +60,7 @@ const SidePanel = () => {
           </p>
         </div>
         <Link
-          to="/admin"
+          href="/Courses"
           className="cursor-pointer w-full gap-3 p-4 pl-[20%] text-white font-semibold mt-5 flex flex-row items-center justify-start hover:bg-gray-700"
         >
           <FaHome />
@@ -99,7 +99,7 @@ const SidePanel = () => {
             Create Course
           </Link>
           <Link
-            to="/admin"
+            href="/Courses"
             className="cursor-pointer w-full gap-3 px-4 py-3 pl-[20%] text-white font-semibold mt-0 flex flex-row items-center justify-start hover:bg-gray-700"
           >
             <FaUserGraduate />

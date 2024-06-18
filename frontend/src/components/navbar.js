@@ -19,7 +19,7 @@ export default function NavBar() {
             <Link href="/#">Home</Link>
           </li>
           <li>
-            <Link href="/#">Course</Link>
+            <Link href="/courses">Course</Link>
           </li>
           <li>
             <Link href="/#">About</Link>

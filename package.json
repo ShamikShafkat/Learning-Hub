@@ -3,7 +3,9 @@
 		"@emotion/react": "^11.11.4",
 		"@emotion/styled": "^11.11.5",
 		"@mui/material": "^5.15.20",
+		"react-card-carousel": "^1.1.3",
 		"react-drag-drop-files": "^2.3.10",
-		"react-dropdown": "^1.11.0"
+		"react-dropdown": "^1.11.0",
+		"react-player": "^2.16.0"
 	}
 }

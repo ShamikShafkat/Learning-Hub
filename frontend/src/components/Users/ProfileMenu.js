@@ -78,13 +78,13 @@ const ProfileMenu = () => {
           </div>
         </Link>
         <Link
-          href="/profile"
+          href="/enrolled"
           className={`flex flex-row w-full flex flex-row gap-5 justify-center items-center focus:bg-transparent  pl-5 pr-5 py-3 pt-5 justify-center items-center hover:bg-[#615a5aa9] border-transparent border-y-[1px] hover:border-[#fffdfd2c] ${
             menu === "enrolled" ? "active" : ""
           }`}
         >
           <div
-            href="/profile"
+            href="/enrolled_courses"
             className="w-full flex flex-row gap-5 justify-center items-center "
           >
             <GoBookmarkFill className="w-[17%] h-[83%]" />
