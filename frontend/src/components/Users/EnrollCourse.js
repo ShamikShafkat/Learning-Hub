@@ -1,6 +1,16 @@
 import { Button } from "antd";
+import React from "react";
+import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const EnrollCourse = ({ courses }) => {
+  const navigator = useNavigate();
+  useEffect(() => {
+    axios.get(`http://localhost:8000/courses`);
+  }, []);
   const course = {
     title: "Introduction to Machine Learning",
     description:
@@ -41,7 +51,13 @@ const EnrollCourse = ({ courses }) => {
         </div>
 
         <div className="w-[100%] h-auto flex flex-col justify-start items-end w-[100%] text-white font-bold text-[20px] text-start font-sans mt-5">
-          <Button type="primary" className="font-semibold">
+          <Button
+            type="primary"
+            className="font-semibold"
+            onClick={() => {
+              navigator("/profile");
+            }}
+          >
             Enroll Now
           </Button>
         </div>

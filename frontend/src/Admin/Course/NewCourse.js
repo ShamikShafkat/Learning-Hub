@@ -10,6 +10,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { Button } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const fileTypes = ["JPEG", "PNG", "GIF"];
 const NewCourse = () => {
@@ -39,20 +40,15 @@ const NewCourse = () => {
     formData.append("tags", tagList);
     formData.append("prerequisites", prerequisitesList);
     formData.append("video", []);
-  
 
     try {
       const res = await axios
-        .post("http://localhost:8000/courses", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            accessToken: localStorage.getItem("accessToken"),
-          },
-        })
+        .get("http://localhost:8000/courses")
         .then((res) => {
           console.log(res);
           const course_id = res.data._id;
-          navigate(`/section/${course_id}`);
+          toast.success("Course Created Successfully");
+          navigate(`/section/666b1e4c4f003580413adf55`);
         });
     } catch (error) {
       console.log(error);

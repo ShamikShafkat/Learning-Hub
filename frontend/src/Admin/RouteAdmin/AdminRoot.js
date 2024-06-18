@@ -6,6 +6,7 @@ import NewCourse from "../Course/NewCourse";
 import AddSection from "../Course/AddSections";
 import AddLesson from "../Course/AddLocation";
 import AllCourse from "../Course/AllCourse";
+import Analysis from "../Course/Analysis";
 const AdminRoot = () => {
   return (
     <AdminLayout>
@@ -15,6 +16,7 @@ const AdminRoot = () => {
         <Route path="/create-course" element={<NewCourse />} />
         <Route path="/section/:id" element={<AddSection />} />
         <Route path="/lesson/:course_id/:section_id" element={<AddLesson />} />
+        <Route path="/analysis" element={<Analysis />} />
 
         <Route path="/Courses" element={<AllCourse />} />
       </Routes>

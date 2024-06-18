@@ -3,8 +3,10 @@ import { Button } from "antd";
 import React, { useEffect } from "react";
 import { FaStar } from "react-icons/fa";
 import { GoDotFill } from "react-icons/go";
+import { useNavigate } from "react-router-dom";
 
 const CourseCard = ({ courses }) => {
+  const navigator = useNavigate();
   const array = [1, 2, 3];
   const course = {
     title: courses?.title,
@@ -54,8 +56,14 @@ const CourseCard = ({ courses }) => {
             <FaStar color="yellow" /> {course.rating} (0 review)
           </p>
 
-          <Button type="primary" className="font-semibold">
-            Enroll Now
+          <Button
+            type="primary"
+            className="font-semibold"
+            onClick={() => {
+              navigator("/course/6670f39979aa419388dd444d");
+            }}
+          >
+            Details
           </Button>
         </div>
       </div>

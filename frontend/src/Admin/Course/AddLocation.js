@@ -145,6 +145,17 @@ const AddLesson = () => {
                   id="video"
                   className="custom-input mt-3 w-[80%] !bg-[#9b8c8c58] !border-0 font-bold text-[18px] px-4 !py-3 font-sans focus:outline-none"
                 />
+                <label htmlFor="courseName">
+                  <h1 className="text-white font-bold text-[15px] font-sans mt-3">
+                    Resources
+                  </h1>
+                </label>
+                <input
+                  type="file"
+                  placeholder="Resources"
+                  id="video"
+                  className="custom-input mt-3 w-[80%] !bg-[#9b8c8c58] !border-0 font-bold text-[18px] px-4 !py-3 font-sans focus:outline-none"
+                />
               </div>
             </div>
           </div>

@@ -3,7 +3,7 @@ import CourseCard from "../../components/Course";
 import axios from "axios";
 import { FaArrowRight } from "react-icons/fa";
 
-const Enroll = () => {
+const Analysis = () => {
   useEffect(() => {
     axios.get("http://localhost:8000/courses");
   }, []);
@@ -62,4 +62,4 @@ const Enroll = () => {
     </div>
   );
 };
-export default Enroll;
+export default Analysis;

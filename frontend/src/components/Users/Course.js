@@ -1,6 +1,5 @@
 import { Button } from "antd";
 import React from "react";
-import ReactPlayer from "react-player";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
